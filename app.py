@@ -40,3 +40,4 @@ if st.button("Berechnen"):
     plt.ylabel("Sparsumme (€)")
     st.pyplot(plt)
 
+
