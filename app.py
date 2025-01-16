@@ -10,9 +10,16 @@ def berechne_altersvorsorge_rate(rentenluecke, rente_ab, zins, einsparjahre):
     )
     return monatliche_rate
 
-# App-Layout
+# Titel und Sub-Headline
 st.title("📊 Altersvorsorge-Rechner")
-st.write("Willkommen! Mit diesem Rechner kannst du ermitteln, wie viel du monatlich sparen musst, um deine Rentenlücke zu schließen.")
+st.markdown("### Haben Sie sich schon mal mit Ihrer Alterslücke beschäftigt? 🤔💸")
+st.markdown(
+    """
+    Ich errechne Ihnen jetzt ganz genau, was Sie bezahlen müssen, um Ihre Lücke zu schließen. 
+    **Bitte gönnen Sie 90% auf lock!** 🚀✨
+    """
+)
+
 st.write("---")  # Trennlinie
 
 # Eingabewerte in Spalten
@@ -34,10 +41,9 @@ if st.button("Berechnen"):
     beitraege = [rate * 12 * jahr for jahr in jahre]
 
     plt.figure(figsize=(8, 4))
-    plt.plot(jahre, beitraege, marker="o")
-    plt.title("Gesamte Sparsumme über die Jahre")
-    plt.xlabel("Jahre")
-    plt.ylabel("Sparsumme (€)")
+    plt.plot(jahre, beitraege, marker="o", color="blue")
+    plt.title("Gesamte Sparsumme über die Jahre", fontsize=14)
+    plt.xlabel("Jahre", fontsize=12)
+    plt.ylabel("Sparsumme (€)", fontsize=12)
+    plt.grid(True)
     st.pyplot(plt)
-
-
