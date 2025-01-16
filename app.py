@@ -17,5 +17,4 @@ einsparjahre = st.number_input("Einsparjahre:", min_value=0, step=1)
 
 if st.button("Berechnen"):
     rate = berechne_altersvorsorge_rate(rentenluecke, rente_ab, zins, einsparjahre)
-    st.write(f"Die monatliche Rate beträgt: {rate:.2f}
-
+    st.write(f"Die monatliche Rate beträgt: {rate:.2f} €")
