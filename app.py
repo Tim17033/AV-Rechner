@@ -36,14 +36,27 @@ if st.button("Berechnen"):
     rate = berechne_altersvorsorge_rate(rentenluecke, rente_ab, zins, einsparjahre)
     st.success(f"🎉 Die monatliche Sparrate beträgt: {rate:.2f} €")
 
-    # Visualisierung
+    # Berechnungen für die Visualisierung
     jahre = list(range(1, einsparjahre + 1))
-    beitraege = [rate * 12 * jahr for jahr in jahre]
+    eigenbeitraege = [rate * 12 * jahr for jahr in jahre]
+    gesamtkapital = [(rate * ((1 + (zins / 12)) ** (jahr * 12) - 1) / (zins / 12)) for jahr in jahre]
+    zinsen = [gesamtkapital[i] - eigenbeitraege[i] for i in range(len(jahre))]
 
-    plt.figure(figsize=(8, 4))
-    plt.plot(jahre, beitraege, marker="o", color="blue")
-    plt.title("Gesamte Sparsumme über die Jahre", fontsize=14)
+    # Visualisierung
+    plt.figure(figsize=(10, 6))
+    plt.plot(jahre, gesamtkapital, label="Gesamtkapital", color="green", marker="o")
+    plt.plot(jahre, eigenbeitraege, label="Eigenbeitrag", color="blue", linestyle="--")
+    plt.fill_between(jahre, eigenbeitraege, gesamtkapital, color="orange", alpha=0.3, label="Zinsen")
+    plt.title("Gesamtes angespartes Kapital über die Jahre", fontsize=16)
     plt.xlabel("Jahre", fontsize=12)
-    plt.ylabel("Sparsumme (€)", fontsize=12)
-    plt.grid(True)
+    plt.ylabel("Kapital (€)", fontsize=12)
+    plt.grid(True, linestyle="--", alpha=0.6)
+    plt.legend(fontsize=12)
     st.pyplot(plt)
+
+    # Zusätzliche Textausgabe für das Endkapital
+    st.markdown(f"### Ergebnis")
+    st.markdown(f"- **Angespartes Gesamtkapital:** {gesamtkapital[-1]:,.2f} €")
+    st.markdown(f"- **Eigenbeiträge:** {eigenbeitraege[-1]:,.2f} €")
+    st.markdown(f"- **Erwirtschaftete Zinsen:** {zinsen[-1]:,.2f} €")
+
