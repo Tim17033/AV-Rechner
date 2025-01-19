@@ -70,8 +70,32 @@ if st.button("Berechnen"):
     st.markdown(f"- **Eigenbeiträge:** {eigenbeitraege[-1]:,.2f} €")
     st.markdown(f"- **Erwirtschaftete Zinsen:** {zinsen[-1]:,.2f} €")
 
-    # Button für die 12/62-Regel
-    if st.button("Was ist, wenn ich zu Renteneintritt eine Kapitalentnahme machen möchte?"):
+    # Auffälliger 12/62-Button mit Animation
+    button_style = """
+        <style>
+        .red-button {
+            background-color: #ff4b4b;
+            border: none;
+            color: white;
+            padding: 10px 20px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 10px 2px;
+            cursor: pointer;
+            border-radius: 5px;
+            animation: pulse 1.5s infinite;
+        }
+        @keyframes pulse {
+            0% { box-shadow: 0 0 5px #ff4b4b; }
+            50% { box-shadow: 0 0 20px #ff4b4b; }
+            100% { box-shadow: 0 0 5px #ff4b4b; }
+        }
+        </style>
+    """
+    st.markdown(button_style, unsafe_allow_html=True)
+    if st.markdown('<button class="red-button">🔍 Was ist, wenn ich zu Renteneintritt eine Kapitalentnahme machen möchte?</button>', unsafe_allow_html=True):
         entnahme = st.number_input("Gewünschte Kapitalentnahme (€):", min_value=0.0, step=100.0)
         netto_kapital, steuerfrei, steuerbelastung = berechne_12_62_kapital(entnahme, zinsen[-1])
 
@@ -80,15 +104,5 @@ if st.button("Berechnen"):
         st.markdown(f"- **Steuerfreie Zinserträge:** {steuerfrei:,.2f} €")
         st.markdown(f"- **Steuerbelastung auf Zinserträge:** {steuerbelastung:,.2f} €")
 
-# Steuerliche Berücksichtigung während der Rente
-st.write("---")
-st.markdown("### Steuerliche Berücksichtigung während der Rente 📉")
-st.markdown(
-    """
-    Übliche Steuersätze auf Renteneinkommen:
-    - **Bis 2040:** Besteuerung von 83% (2023) bis 100% (2040).
-    - **Persönlicher Steuersatz:** Variiert zwischen 15% und 45% je nach Einkommen.
-    """
-)
 
 
