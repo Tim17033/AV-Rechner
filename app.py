@@ -11,11 +11,37 @@ def berechne_altersvorsorge_rate(rentenluecke, rente_ab, zins, einsparjahre):
     )
     return monatliche_rate
 
-def berechne_12_62_kapital(entnahme, zins_ertrag):
+def berechne_12_62_kapital(gesamtkapital, zins_ertrag):
     steuerfrei = zins_ertrag / 2  # Nur die Hälfte der Zinserträge wird versteuert
     steuerbelastung = steuerfrei * 0.25  # Kapitalertragssteuer von 25%
-    netto_kapital = entnahme - steuerbelastung
+    netto_kapital = gesamtkapital - steuerbelastung
     return netto_kapital, steuerfrei, steuerbelastung
+
+# Button-Styling mit Animationen
+button_style = """
+    <style>
+    .red-button {
+        background-color: #ff4b4b;
+        border: none;
+        color: white;
+        padding: 10px 20px;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 16px;
+        margin: 10px 2px;
+        cursor: pointer;
+        border-radius: 5px;
+        animation: pulse 1.5s infinite;
+    }
+    @keyframes pulse {
+        0% { box-shadow: 0 0 5px #ff4b4b; }
+        50% { box-shadow: 0 0 20px #ff4b4b; }
+        100% { box-shadow: 0 0 5px #ff4b4b; }
+    }
+    </style>
+"""
+st.markdown(button_style, unsafe_allow_html=True)
 
 # Titel und Sub-Headline
 st.title("📊 Altersvorsorge-Rechner")
@@ -38,8 +64,8 @@ with col2:
     zins = st.number_input("Zinssatz (%):", min_value=0.0, step=0.1) / 100
     einsparjahre = st.number_input("Einsparjahre:", min_value=0, step=1)
 
-# Lade-Animation
-if st.button("Berechnen"):
+# Lade-Animation und Berechnung der Altersvorsorge
+if st.markdown('<button class="red-button">🎯 Berechnung starten</button>', unsafe_allow_html=True):
     with st.spinner("Berechnung Ihrer Alterslücke... Bitte warten! ⏳"):
         time.sleep(3)  # Simulierte Ladezeit
 
@@ -70,39 +96,16 @@ if st.button("Berechnen"):
     st.markdown(f"- **Eigenbeiträge:** {eigenbeitraege[-1]:,.2f} €")
     st.markdown(f"- **Erwirtschaftete Zinsen:** {zinsen[-1]:,.2f} €")
 
-    # Auffälliger 12/62-Button mit Animation
-    button_style = """
-        <style>
-        .red-button {
-            background-color: #ff4b4b;
-            border: none;
-            color: white;
-            padding: 10px 20px;
-            text-align: center;
-            text-decoration: none;
-            display: inline-block;
-            font-size: 16px;
-            margin: 10px 2px;
-            cursor: pointer;
-            border-radius: 5px;
-            animation: pulse 1.5s infinite;
-        }
-        @keyframes pulse {
-            0% { box-shadow: 0 0 5px #ff4b4b; }
-            50% { box-shadow: 0 0 20px #ff4b4b; }
-            100% { box-shadow: 0 0 5px #ff4b4b; }
-        }
-        </style>
-    """
-    st.markdown(button_style, unsafe_allow_html=True)
-    if st.markdown('<button class="red-button">🔍 Was ist, wenn ich zu Renteneintritt eine Kapitalentnahme machen möchte?</button>', unsafe_allow_html=True):
-        entnahme = st.number_input("Gewünschte Kapitalentnahme (€):", min_value=0.0, step=100.0)
-        netto_kapital, steuerfrei, steuerbelastung = berechne_12_62_kapital(entnahme, zinsen[-1])
+    # Auffälliger 12/62-Button mit Berechnung der Kapitalentnahme
+    if st.markdown('<button class="red-button">🔍 Was ist, wenn ich zu Renteneintritt 100% Kapital entnehmen möchte?</button>', unsafe_allow_html=True):
+        kapital_entnahme = gesamtkapital[-1]  # Gesamtkapital bei Renteneintritt
+        netto_kapital, steuerfrei, steuerbelastung = berechne_12_62_kapital(kapital_entnahme, zinsen[-1])
 
         st.markdown(f"### Kapitalentnahme mit 12/62-Regel")
         st.markdown(f"- **Netto-Kapital (nach Steuern):** {netto_kapital:,.2f} €")
         st.markdown(f"- **Steuerfreie Zinserträge:** {steuerfrei:,.2f} €")
         st.markdown(f"- **Steuerbelastung auf Zinserträge:** {steuerbelastung:,.2f} €")
+
 
 
 
