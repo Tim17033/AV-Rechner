@@ -2,6 +2,7 @@ import streamlit as st
 import matplotlib.pyplot as plt
 import time
 
+# Berechnung der Altersvorsorge
 def berechne_altersvorsorge_rate(rentenluecke, rente_ab, zins, einsparjahre):
     rentendauer_monate = (85 - rente_ab) * 12
     monatlicher_zins = zins / 12
@@ -11,6 +12,7 @@ def berechne_altersvorsorge_rate(rentenluecke, rente_ab, zins, einsparjahre):
     )
     return monatliche_rate
 
+# Berechnung der 12/62-Regel
 def berechne_12_62_kapital(gesamtkapital, zins_ertrag):
     steuerfrei = zins_ertrag / 2  # Nur die Hälfte der Zinserträge wird versteuert
     steuerbelastung = steuerfrei * 0.25  # Kapitalertragssteuer von 25%
@@ -99,13 +101,17 @@ if st.button("🎯 Berechnung starten", key="berechnen"):
 
     # 12/62-Button für Kapitalentnahme
     if st.button("🔍 Was ist, wenn ich zu Renteneintritt 100% Kapital entnehmen möchte?", key="kapitalentnahme"):
+        with st.spinner("Berechnung der Kapitalentnahme... Bitte warten! ⏳"):
+            time.sleep(2)  # Simulierte Ladezeit
         kapital_entnahme = gesamtkapital[-1]  # Gesamtkapital bei Renteneintritt
         netto_kapital, steuerfrei, steuerbelastung = berechne_12_62_kapital(kapital_entnahme, zinsen[-1])
 
         st.markdown(f"### Kapitalentnahme mit 12/62-Regel")
-        st.markdown(f"- **Netto-Kapital (nach Steuern):** {netto_kapital:,.2f} €")
+        st.markdown(f"- **Brutto-Kapital:** {kapital_entnahme:,.2f} €")
         st.markdown(f"- **Steuerfreie Zinserträge:** {steuerfrei:,.2f} €")
         st.markdown(f"- **Steuerbelastung auf Zinserträge:** {steuerbelastung:,.2f} €")
+        st.markdown(f"- **Netto-Kapital (nach Steuern):** {netto_kapital:,.2f} €")
+
 
 
 
