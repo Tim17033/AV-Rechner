@@ -1,5 +1,6 @@
 import streamlit as st
 import matplotlib.pyplot as plt
+import time
 
 def berechne_altersvorsorge_rate(rentenluecke, rente_ab, zins, einsparjahre):
     rentendauer_monate = (85 - rente_ab) * 12
@@ -9,6 +10,12 @@ def berechne_altersvorsorge_rate(rentenluecke, rente_ab, zins, einsparjahre):
         (1 + monatlicher_zins) ** anzahl_monate - 1
     )
     return monatliche_rate
+
+def berechne_12_62_kapital(entnahme, zins_ertrag):
+    steuerfrei = zins_ertrag / 2  # Nur die Hälfte der Zinserträge wird versteuert
+    steuerbelastung = steuerfrei * 0.25  # Kapitalertragssteuer von 25%
+    netto_kapital = entnahme - steuerbelastung
+    return netto_kapital, steuerfrei, steuerbelastung
 
 # Titel und Sub-Headline
 st.title("📊 Altersvorsorge-Rechner")
@@ -31,8 +38,11 @@ with col2:
     zins = st.number_input("Zinssatz (%):", min_value=0.0, step=0.1) / 100
     einsparjahre = st.number_input("Einsparjahre:", min_value=0, step=1)
 
-# Ergebnisberechnung
+# Lade-Animation
 if st.button("Berechnen"):
+    with st.spinner("Berechnung Ihrer Alterslücke... Bitte warten! ⏳"):
+        time.sleep(3)  # Simulierte Ladezeit
+
     rate = berechne_altersvorsorge_rate(rentenluecke, rente_ab, zins, einsparjahre)
     st.success(f"🎉 Die monatliche Sparrate beträgt: {rate:.2f} €")
 
@@ -59,4 +69,26 @@ if st.button("Berechnen"):
     st.markdown(f"- **Angespartes Gesamtkapital:** {gesamtkapital[-1]:,.2f} €")
     st.markdown(f"- **Eigenbeiträge:** {eigenbeitraege[-1]:,.2f} €")
     st.markdown(f"- **Erwirtschaftete Zinsen:** {zinsen[-1]:,.2f} €")
+
+    # Button für die 12/62-Regel
+    if st.button("Was ist, wenn ich zu Renteneintritt eine Kapitalentnahme machen möchte?"):
+        entnahme = st.number_input("Gewünschte Kapitalentnahme (€):", min_value=0.0, step=100.0)
+        netto_kapital, steuerfrei, steuerbelastung = berechne_12_62_kapital(entnahme, zinsen[-1])
+
+        st.markdown(f"### Kapitalentnahme mit 12/62-Regel")
+        st.markdown(f"- **Netto-Kapital (nach Steuern):** {netto_kapital:,.2f} €")
+        st.markdown(f"- **Steuerfreie Zinserträge:** {steuerfrei:,.2f} €")
+        st.markdown(f"- **Steuerbelastung auf Zinserträge:** {steuerbelastung:,.2f} €")
+
+# Steuerliche Berücksichtigung während der Rente
+st.write("---")
+st.markdown("### Steuerliche Berücksichtigung während der Rente 📉")
+st.markdown(
+    """
+    Übliche Steuersätze auf Renteneinkommen:
+    - **Bis 2040:** Besteuerung von 83% (2023) bis 100% (2040).
+    - **Persönlicher Steuersatz:** Variiert zwischen 15% und 45% je nach Einkommen.
+    """
+)
+
 
