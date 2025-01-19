@@ -105,15 +105,13 @@ if st.button("🎯 Berechnung starten", key="berechnen"):
 
     st.write("---")
     st.markdown("### Kapitalentnahme mit 12/62-Regel 💼")
+    st.markdown(
+        """
+        #### Erklärung der 12/62-Regel
+        Wenn Sie mindestens 12 Jahre in den Vertrag eingezahlt haben und zum Zeitpunkt der Kapitalentnahme mindestens 62 Jahre alt sind, wird nur **die Hälfte der Zinserträge** mit der Kapitalertragssteuer von 25% besteuert.
+        """
+    )
     st.markdown(f"- **Brutto-Kapital:** {kapital_entnahme:,.2f} €")
     st.markdown(f"- **Steuerfreie Zinserträge:** {steuerfrei:,.2f} €")
     st.markdown(f"- **Steuerbelastung auf Zinserträge:** {steuerbelastung:,.2f} €")
-    st.markdown(f"- **Netto-Kapital (nach Steuern):** {netto_kapital:,.2f} €")
-
-
-
-
-
-
-
-
+    st.markdown(f"### 💰 **Netto-Kapital (nach Steuern): {netto_kapital:,.2f} €**")
