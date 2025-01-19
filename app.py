@@ -17,7 +17,7 @@ def berechne_12_62_kapital(gesamtkapital, zins_ertrag):
     netto_kapital = gesamtkapital - steuerbelastung
     return netto_kapital, steuerfrei, steuerbelastung
 
-# Button-Styling mit Animationen
+# Styling für rote, animierte Buttons
 button_style = """
     <style>
     .red-button {
@@ -64,50 +64,49 @@ with col2:
     zins = st.number_input("Zinssatz (%):", min_value=0.0, step=0.1, key="zins") / 100
     einsparjahre = st.number_input("Einsparjahre:", min_value=0, step=1, key="einsparjahre")
 
-# Überprüfung, ob alle Eingaben gemacht wurden
-if rentenluecke > 0 and rente_ab > 0 and zins > 0 and einsparjahre > 0:
-    if st.button("🎯 Berechnung starten", key="berechnen"):
-        with st.spinner("Berechnung Ihrer Alterslücke... Bitte warten! ⏳"):
-            time.sleep(3)  # Simulierte Ladezeit
+# Berechnung starten
+if st.button("🎯 Berechnung starten", key="berechnen"):
+    with st.spinner("Berechnung Ihrer Alterslücke... Bitte warten! ⏳"):
+        time.sleep(2)  # Simulierte Ladezeit
 
-        rate = berechne_altersvorsorge_rate(rentenluecke, rente_ab, zins, einsparjahre)
-        st.success(f"🎉 Die monatliche Sparrate beträgt: {rate:.2f} €")
+    # Altersvorsorgeberechnung
+    rate = berechne_altersvorsorge_rate(rentenluecke, rente_ab, zins, einsparjahre)
+    st.success(f"🎉 Die monatliche Sparrate beträgt: {rate:.2f} €")
 
-        # Berechnungen für die Visualisierung
-        jahre = list(range(1, einsparjahre + 1))
-        eigenbeitraege = [rate * 12 * jahr for jahr in jahre]
-        gesamtkapital = [(rate * ((1 + (zins / 12)) ** (jahr * 12) - 1) / (zins / 12)) for jahr in jahre]
-        zinsen = [gesamtkapital[i] - eigenbeitraege[i] for i in range(len(jahre))]
+    # Berechnungen für die Visualisierung
+    jahre = list(range(1, einsparjahre + 1))
+    eigenbeitraege = [rate * 12 * jahr for jahr in jahre]
+    gesamtkapital = [(rate * ((1 + (zins / 12)) ** (jahr * 12) - 1) / (zins / 12)) for jahr in jahre]
+    zinsen = [gesamtkapital[i] - eigenbeitraege[i] for i in range(len(jahre))]
 
-        # Visualisierung
-        plt.figure(figsize=(10, 6))
-        plt.plot(jahre, gesamtkapital, label="Gesamtkapital", color="green", marker="o")
-        plt.plot(jahre, eigenbeitraege, label="Eigenbeitrag", color="blue", linestyle="--")
-        plt.fill_between(jahre, eigenbeitraege, gesamtkapital, color="orange", alpha=0.3, label="Zinsen")
-        plt.title("Gesamtes angespartes Kapital über die Jahre", fontsize=16)
-        plt.xlabel("Jahre", fontsize=12)
-        plt.ylabel("Kapital (€)", fontsize=12)
-        plt.grid(True, linestyle="--", alpha=0.6)
-        plt.legend(fontsize=12)
-        st.pyplot(plt)
+    # Visualisierung
+    plt.figure(figsize=(10, 6))
+    plt.plot(jahre, gesamtkapital, label="Gesamtkapital", color="green", marker="o")
+    plt.plot(jahre, eigenbeitraege, label="Eigenbeitrag", color="blue", linestyle="--")
+    plt.fill_between(jahre, eigenbeitraege, gesamtkapital, color="orange", alpha=0.3, label="Zinsen")
+    plt.title("Gesamtes angespartes Kapital über die Jahre", fontsize=16)
+    plt.xlabel("Jahre", fontsize=12)
+    plt.ylabel("Kapital (€)", fontsize=12)
+    plt.grid(True, linestyle="--", alpha=0.6)
+    plt.legend(fontsize=12)
+    st.pyplot(plt)
 
-        # Zusätzliche Textausgabe für das Endkapital
-        st.markdown(f"### Ergebnis")
-        st.markdown(f"- **Angespartes Gesamtkapital:** {gesamtkapital[-1]:,.2f} €")
-        st.markdown(f"- **Eigenbeiträge:** {eigenbeitraege[-1]:,.2f} €")
-        st.markdown(f"- **Erwirtschaftete Zinsen:** {zinsen[-1]:,.2f} €")
+    # Zusätzliche Textausgabe für das Endkapital
+    st.markdown(f"### Ergebnis")
+    st.markdown(f"- **Angespartes Gesamtkapital:** {gesamtkapital[-1]:,.2f} €")
+    st.markdown(f"- **Eigenbeiträge:** {eigenbeitraege[-1]:,.2f} €")
+    st.markdown(f"- **Erwirtschaftete Zinsen:** {zinsen[-1]:,.2f} €")
 
-        # Auffälliger 12/62-Button mit Berechnung der Kapitalentnahme
-        if st.button("🔍 Was ist, wenn ich zu Renteneintritt 100% Kapital entnehmen möchte?", key="kapitalentnahme"):
-            kapital_entnahme = gesamtkapital[-1]  # Gesamtkapital bei Renteneintritt
-            netto_kapital, steuerfrei, steuerbelastung = berechne_12_62_kapital(kapital_entnahme, zinsen[-1])
+    # 12/62-Button für Kapitalentnahme
+    if st.button("🔍 Was ist, wenn ich zu Renteneintritt 100% Kapital entnehmen möchte?", key="kapitalentnahme"):
+        kapital_entnahme = gesamtkapital[-1]  # Gesamtkapital bei Renteneintritt
+        netto_kapital, steuerfrei, steuerbelastung = berechne_12_62_kapital(kapital_entnahme, zinsen[-1])
 
-            st.markdown(f"### Kapitalentnahme mit 12/62-Regel")
-            st.markdown(f"- **Netto-Kapital (nach Steuern):** {netto_kapital:,.2f} €")
-            st.markdown(f"- **Steuerfreie Zinserträge:** {steuerfrei:,.2f} €")
-            st.markdown(f"- **Steuerbelastung auf Zinserträge:** {steuerbelastung:,.2f} €")
-else:
-    st.warning("❗ Bitte füllen Sie alle Eingabefelder aus, um die Berechnung zu starten.")
+        st.markdown(f"### Kapitalentnahme mit 12/62-Regel")
+        st.markdown(f"- **Netto-Kapital (nach Steuern):** {netto_kapital:,.2f} €")
+        st.markdown(f"- **Steuerfreie Zinserträge:** {steuerfrei:,.2f} €")
+        st.markdown(f"- **Steuerbelastung auf Zinserträge:** {steuerbelastung:,.2f} €")
+
 
 
 
