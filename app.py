@@ -99,18 +99,17 @@ if st.button("🎯 Berechnung starten", key="berechnen"):
     st.markdown(f"- **Eigenbeiträge:** {eigenbeitraege[-1]:,.2f} €")
     st.markdown(f"- **Erwirtschaftete Zinsen:** {zinsen[-1]:,.2f} €")
 
-    # 12/62-Button für Kapitalentnahme
-    if st.button("🔍 Was ist, wenn ich zu Renteneintritt 100% Kapital entnehmen möchte?", key="kapitalentnahme"):
-        with st.spinner("Berechnung der Kapitalentnahme... Bitte warten! ⏳"):
-            time.sleep(2)  # Simulierte Ladezeit
-        kapital_entnahme = gesamtkapital[-1]  # Gesamtkapital bei Renteneintritt
-        netto_kapital, steuerfrei, steuerbelastung = berechne_12_62_kapital(kapital_entnahme, zinsen[-1])
+    # Berechnung der 12/62-Regel
+    kapital_entnahme = gesamtkapital[-1]  # Gesamtkapital bei Renteneintritt
+    netto_kapital, steuerfrei, steuerbelastung = berechne_12_62_kapital(kapital_entnahme, zinsen[-1])
 
-        st.markdown(f"### Kapitalentnahme mit 12/62-Regel")
-        st.markdown(f"- **Brutto-Kapital:** {kapital_entnahme:,.2f} €")
-        st.markdown(f"- **Steuerfreie Zinserträge:** {steuerfrei:,.2f} €")
-        st.markdown(f"- **Steuerbelastung auf Zinserträge:** {steuerbelastung:,.2f} €")
-        st.markdown(f"- **Netto-Kapital (nach Steuern):** {netto_kapital:,.2f} €")
+    st.write("---")
+    st.markdown("### Kapitalentnahme mit 12/62-Regel 💼")
+    st.markdown(f"- **Brutto-Kapital:** {kapital_entnahme:,.2f} €")
+    st.markdown(f"- **Steuerfreie Zinserträge:** {steuerfrei:,.2f} €")
+    st.markdown(f"- **Steuerbelastung auf Zinserträge:** {steuerbelastung:,.2f} €")
+    st.markdown(f"- **Netto-Kapital (nach Steuern):** {netto_kapital:,.2f} €")
+
 
 
 
